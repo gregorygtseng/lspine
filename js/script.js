@@ -368,8 +368,32 @@ $(document).ready(function() {
 			// convert first letter to lowercase because text starts with "There "
 			levels_text[i] = levels_text[i].substring(0, 1).toLowerCase() + levels_text[i].substring(1);
 		}
-		
-		
+
+		// ===== GLOBAL TEXT ===== //
+		var global_text = '';
+		if (document.getElementById('mild-spon').checked) {
+			global_text = '<br><br>Mild spondylosis throughout.';
+		}
+		if (document.getElementById('mod-spon').checked) {
+			global_text = '<br><br>Moderate spondylosis throughout.';
+		}
+		if (document.getElementById('sev-spon').checked) {
+			global_text = '<br><br>Severe spondylosis throughout.';
+		}
+		if (document.getElementById('mild-spon').checked && document.getElementById('mod-spon').checked) {
+			global_text = '<br><br>Mild-moderate spondylosis throughout.';
+		}
+		if (document.getElementById('mod-spon').checked && document.getElementById('sev-spon').checked) {
+			global_text = '<br><br>Moderate-severe spondylosis throughout.';
+		}
+		if (document.getElementById('mild-spon').checked && document.getElementById('mod-spon').checked && document.getElementById('sev-spon').checked) {
+			global_text = '<br><br>Lumbar spondylosis throughout.';
+		}
+		if (document.getElementById('mild-spon').checked && document.getElementById('sev-spon').checked) {
+			global_text = '<br><br>Lumbar spondylosis throughout.';
+		}
+		levels_text[5] += global_text;
+
 		// ===== ADD TALKSTATION [BRACKETS] ===== //
 		if (document.getElementById('talk-brackets').checked) {	// make sure checkbox is checked
 			for (i = 1; i <= 5; i++) {
@@ -377,14 +401,14 @@ $(document).ready(function() {
 				levels_text[i] = levels_text[i].replace(/(mild|moderate|severe|minimal|no disc bulge or protrusion.|No neuroforaminal narrowing\.|No spinal canal stenosis\.)/ig, '[$1]');
 				levels_text[i] = levels_text[i].replace(/(\[mild\]-\[moderate\]|\[moderate\]-\[severe\]|\[mild\]-\[severe\])/ig, '[$1]');
 			}
-			
+
 			// add [brackets] to conclusion sentence for easier editing in Talk
 			if (concl) {
 				concl = concl.replace(/b><br>(.*\.)<br>/igm, 'b><br> [$1]<br>');
 			}
 		}
-		
-		
+
+
 		// ===== GENERATE REPORT ====== //
 		report_text =	'<b>L1-L2</b>: There ' + levels_text[1] + '<br>' + 
 						'<b>L2-L3</b>: There ' + levels_text[2] + '<br>' + 
@@ -464,7 +488,7 @@ $(document).ready(function() {
 		});
 	};
 
-	$('#conclusion, #talk-brackets').click(function() {
+	$('#conclusion, #talk-brackets, #mild-spon, #mod-spon, #sev-spon').click(function() {
 		lspine.update();
 	});
 
