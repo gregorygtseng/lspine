@@ -429,6 +429,79 @@ $(document).ready(function() {
 		lspine.update();
 	};
 
+	// ===== RANDOM REPORT ===== //
+	lspine.random = function() {
+		var rd = REDIPS.drag,	// reference to the REDIPS.drag objectr_sevs = 
+			r_sevs =
+			[
+			'mild mild-moderate moderate moderate-severe severe'.split(' '),
+			'i io o os s'.split(' ')
+			],
+			i,
+			j,
+			k,
+			r_row,
+			r_col,
+			r_sev,
+			r_count = 8,	// max # of severity descriptors to attempt to place
+			r_level = [],
+			r_levels =
+			[
+			'b1 r10 r11 r12 r13 r14 r15 r16 r17'.split(' '),	// L1-2
+			'b2 r20 r21 r22 r23 r24 r25 r26 r27'.split(' '),	// L2-3
+			'b3 r30 r31 r32 r33 r34 r35 r36 r37'.split(' '),	// L3-4
+			'b4 r40 r41 r42 r43 r44 r45 r46 r47'.split(' '),	// L4-5
+			'b5 r50 r51 r52 r53 r54 r55 r56 r57'.split(' ')		// L5-S1
+			],
+			r_olevels = '#o1 #o2 #o3 #o4 #o5'.split(' '),
+			r_olist = [];
+		
+		// empty the table
+		for (i = 0; i < r_levels.length; i++) {
+			r_level = r_levels[i];
+			for (j = 0; j < r_level.length; j++) {
+				rd.emptyCell(eval(r_level[j]));
+			}
+		}
+		
+		// semi-randomly place severity descriptors
+		k = Math.floor(r_count * Math.random());	// r_count dictates how many to place
+		for (i = 0; i < k; i++) {	
+			// favor lower lumbar levels
+			r_row =	Math.floor(
+						(r_levels.length/100) * Math.sqrt(10000 * Math.random())
+					);
+			
+			// favor both sides (BBDB, SS, NFN) and middle (central, paracentral) of table 
+			r_col = Math.floor(
+						(r_levels[1].length/2) * (1 + Math.cos(1 + 4 * Math.PI * Math.random()))
+					);
+					
+			// random severity
+			r_sev = Math.floor(5 * Math.random());
+			
+			// place the severity descriptor
+			document.getElementById(
+				r_levels[r_row][r_col]
+			).innerHTML =	'<div id="' + r_sevs[0][r_sev] +
+							'c0" class="drag clone ' + r_sevs[1][r_sev] +
+							'">' + r_sevs[0][r_sev] +
+							'</div>';
+		}
+		
+		// randomly choose 'Other findings'
+		for (i = 0; i < 5; i++) {								// cycle through levels
+			k = Math.floor(4 * Math.random());						// choose [0, n-1] findings to select
+			r_olist = [];											// reset the list
+			for (j = 0; j < k; j++) {
+				r_olist[j] = Math.floor(1 + (27 * Math.random()));	// choose one of the 21 checkboxes
+			}
+			$(r_olevels[i]).multipleSelect('setSelects', r_olist);	// select the checkboxes
+		}
+
+		lspine.update();
+	};
+
 	// ===== CAPITALIZE FIRST LETTER OF SENTENCE ===== //
 	lspine.helpers.capitalizer = function(myString) {
 		return myString.replace(/(^\w{1}|\.\s*\w{1})/gi, function(toReplace) {
@@ -474,6 +547,10 @@ $(document).ready(function() {
 
 	$('#selectAllbtn').click(function() {
 		lspine.selectAll();
+	});
+
+	$('#randombtn').click(function() {
+		lspine.random();
 	});
 
 	redipsInit();
